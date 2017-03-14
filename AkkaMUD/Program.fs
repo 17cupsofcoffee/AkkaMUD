@@ -1,4 +1,5 @@
 ﻿open System.Net
+open System.Text
 open Akka.FSharp
 open Akka.Actor
 open Akka.IO
@@ -21,13 +22,38 @@ let greeter = spawn system "greeter" <| fun mailbox ->
     }
     loop()
 
+let handler connection (mailbox: Actor<obj>) =  
+    let rec loop connection = actor {
+        let! msg = mailbox.Receive()
+
+        match msg with
+        | :? Tcp.Received as received ->
+            let data = (Encoding.ASCII.GetString (received.Data.ToArray())).Trim().Split([|' '|], 2)
+
+            match data with
+            | [| "hello"; name |] -> greeter <! Hello (name.Trim())
+            | [| "goodbye"; name |] -> greeter <! Goodbye (name.Trim())
+            | _ -> ()
+        | _ -> mailbox.Unhandled()
+
+        return! loop connection
+    }
+
+    loop connection
+
 let server = spawn system "server" <| fun (mailbox: Actor<obj>) ->
     let rec loop() = actor {
         let! msg = mailbox.Receive()
+        let sender = mailbox.Sender()
         
         match msg with
         | :? Tcp.Bound as bound ->
             printf "Listening on %O\n" bound.LocalAddress
+        | :? Tcp.Connected as connected -> 
+            printf "%O connected to the server\n" connected.RemoteAddress
+            let handlerName = "handler_" + connected.RemoteAddress.ToString().Replace("[", "").Replace("]", "")
+            let handlerRef = spawn mailbox handlerName (handler sender)
+            sender <! Tcp.Register handlerRef
         | _ -> mailbox.Unhandled()
 
         return! loop()
