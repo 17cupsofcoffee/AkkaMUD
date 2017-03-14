@@ -1,5 +1,6 @@
 ﻿open System.Net
 open System.Text
+open Akka
 open Akka.FSharp
 open Akka.Actor
 open Akka.IO
@@ -13,10 +14,11 @@ type GreeterMsg =
 let greeter = spawn system "greeter" <| fun mailbox ->
     let rec loop() = actor {
         let! msg = mailbox.Receive()
+        let sender = mailbox.Sender()
 
         match msg with
-        | Hello name -> printf "Hello, %s!\n" name
-        | Goodbye name -> printf "Goodbye, %s!\n" name
+        | Hello name -> sender <! sprintf "Hello, %s!\n" name
+        | Goodbye name -> sender <! sprintf "Goodbye, %s!\n" name
 
         return! loop()
     }
@@ -33,7 +35,9 @@ let handler connection (mailbox: Actor<obj>) =
             match data with
             | [| "hello"; name |] -> greeter <! Hello (name.Trim())
             | [| "goodbye"; name |] -> greeter <! Goodbye (name.Trim())
-            | _ -> ()
+            | _ -> connection <! Tcp.Write.Create (ByteString.FromString "Invalid request.\n")
+        | :? string as response ->
+            connection <! Tcp.Write.Create (ByteString.FromString response)
         | _ -> mailbox.Unhandled()
 
         return! loop connection
