@@ -12,4 +12,4 @@ was at a certain point in the tutorial, please use these branches:
 * [The Basics](https://github.com/17cupsofcoffee/AkkaMUD/tree/part1a-the-basics)
 * [Network I/O - The Server](https://github.com/17cupsofcoffee/AkkaMUD/tree/part1b-the-server)
 * [Network I/O - The Handler](https://github.com/17cupsofcoffee/AkkaMUD/tree/part1c-the-handler)
-* Responding
+* [Responding](https://github.com/17cupsofcoffee/AkkaMUD/tree/part1d-responding)
