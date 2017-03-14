@@ -6,7 +6,7 @@ own game! All I ask is that you credit me for my contributions, and that you sen
 so I can check it out :)
 
 The master branch contains the version of the code I'm currently working on - to view the code as it
-was at a certain point in the tutorial, please use these commit tags:
+was at a certain point in the tutorial, please use these branches:
 
 ### Part One 
 * The Basics
