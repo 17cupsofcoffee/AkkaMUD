@@ -9,7 +9,7 @@ The master branch contains the version of the code I'm currently working on - to
 was at a certain point in the tutorial, please use these branches:
 
 ### Part One 
-* The Basics
+* [The Basics](https://github.com/17cupsofcoffee/AkkaMUD/tree/part1a-the-basics)
 * Network I/O - The Server
 * Network I/O - The Handler
 * Responding
