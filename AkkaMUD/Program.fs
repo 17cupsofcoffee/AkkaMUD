@@ -1,5 +1,7 @@
-﻿open Akka.FSharp
+﻿open System.Net
+open Akka.FSharp
 open Akka.Actor
+open Akka.IO
 
 let system = System.create "system" (Configuration.defaultConfig())
 
@@ -19,7 +21,19 @@ let greeter = spawn system "greeter" <| fun mailbox ->
     }
     loop()
 
-greeter <! Hello "Joe"
-greeter <! Goodbye "Joe"
+let server = spawn system "server" <| fun (mailbox: Actor<obj>) ->
+    let rec loop() = actor {
+        let! msg = mailbox.Receive()
+        
+        match msg with
+        | :? Tcp.Bound as bound ->
+            printf "Listening on %O\n" bound.LocalAddress
+        | _ -> mailbox.Unhandled()
+
+        return! loop()
+    }
+
+    mailbox.Context.System.Tcp() <! Tcp.Bind(mailbox.Self, IPEndPoint(IPAddress.Any, 9090))
+    loop()    
 
 System.Console.ReadLine() |> ignore
