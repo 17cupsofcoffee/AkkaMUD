@@ -13,3 +13,6 @@ was at a certain point in the tutorial, please use these branches:
 * [Network I/O - The Server](https://github.com/17cupsofcoffee/AkkaMUD/tree/part1b-the-server)
 * [Network I/O - The Handler](https://github.com/17cupsofcoffee/AkkaMUD/tree/part1c-the-handler)
 * [Responding](https://github.com/17cupsofcoffee/AkkaMUD/tree/part1d-responding)
+
+### Part Two
+* [Housekeeping](https://github.com/17cupsofcoffee/AkkaMUD/tree/part2a-housekeeping)
