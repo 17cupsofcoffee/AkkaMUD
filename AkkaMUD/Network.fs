@@ -24,6 +24,10 @@ let handler world connection (mailbox: Actor<obj>) =
 
             | _ ->
                 connection <! Tcp.Write.Create (ByteString.FromString "Invalid request.\n")
+    
+        | :? Tcp.ConnectionClosed as closed ->
+            world <! Leave mailbox.Self
+            mailbox.Context.Stop mailbox.Self
 
         | :? string as response ->
             connection <! Tcp.Write.Create (ByteString.FromString (response + "\n"))
