@@ -4,7 +4,7 @@ open System.Text
 open System.Net
 open Akka.FSharp
 open Akka.IO
-open Greeter
+open World
 
 let handler world connection (mailbox: Actor<obj>) =  
     let rec loop connection = actor {
@@ -15,9 +15,15 @@ let handler world connection (mailbox: Actor<obj>) =
             let data = (Encoding.ASCII.GetString (received.Data.ToArray())).Trim().Split([|' '|], 2)
 
             match data with
-            | [| "hello"; name |] -> world <! Hello (name.Trim())
-            | [| "goodbye"; name |] -> world <! Goodbye (name.Trim())
-            | _ -> connection <! Tcp.Write.Create (ByteString.FromString "Invalid request.\n")
+            | [| "say"; text |] ->
+                world <! Send (text.Trim())
+
+            | [| "quit" |] ->
+                world <! Leave mailbox.Self
+                mailbox.Context.Stop mailbox.Self
+
+            | _ ->
+                connection <! Tcp.Write.Create (ByteString.FromString "Invalid request.\n")
 
         | :? string as response ->
             connection <! Tcp.Write.Create (ByteString.FromString response)
@@ -27,6 +33,7 @@ let handler world connection (mailbox: Actor<obj>) =
         return! loop connection
     }
 
+    world <! Join mailbox.Self
     loop connection
 
 let server world (mailbox: Actor<obj>) =
