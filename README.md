@@ -16,3 +16,4 @@ was at a certain point in the tutorial, please use these branches:
 
 ### Part Two
 * [Housekeeping](https://github.com/17cupsofcoffee/AkkaMUD/tree/part2a-housekeeping)
+* [Building a Room](https://github.com/17cupsofcoffee/AkkaMUD/tree/part2b-building-a-room)
