@@ -27,7 +27,7 @@ let room (mailbox: Actor<RoomMsg>) =
         | Send text -> 
             state.actors
             |> Set.remove sender
-            |> Set.iter (fun a -> a <! text + "\n")
+            |> Set.iter (fun a -> a <! text)
             
             return! loop state
     }

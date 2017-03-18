@@ -26,7 +26,7 @@ let handler world connection (mailbox: Actor<obj>) =
                 connection <! Tcp.Write.Create (ByteString.FromString "Invalid request.\n")
 
         | :? string as response ->
-            connection <! Tcp.Write.Create (ByteString.FromString response)
+            connection <! Tcp.Write.Create (ByteString.FromString (response + "\n"))
 
         | _ -> mailbox.Unhandled()
 
